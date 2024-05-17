@@ -4,14 +4,14 @@
     {
 
         public $host = "localhost";
-        public $password = "00";
+        public $password = "";
         public $username = "root";
         public $dbname = "moviebooking";
         public $connection;
 
         function connect()
         {
-            $c = mysqli_connect($this->host, $this->password, $this->username, $this->dbname,);
+            $c = mysqli_connect($this->host,$this->username, $this->password,  $this->dbname);
 
 
             if ($c) {
@@ -102,11 +102,11 @@
 
 // --------------------------------------------------------------------------------
 // update user detail
-        function updateUser($user_id, $name, $email, $password)
+        function updateUser($id, $name, $email, $password)
         {
             $this->connect();
 
-            $query = "UPDATE  `users` SET `name`='$name', `email`='$email', `password`='$password',  WHERE id=$user_id";
+            $query = "UPDATE `users` SET `user_id`='$id',`name`='$name',`email`='$email',`password`='$password' WHERE user_id=$id";
 
             $result = mysqli_query($this->connection, $query);
             echo $result;
@@ -119,7 +119,7 @@
         {
             $this->connect();
 
-            $query = "UPDATE  `catogries` SET  `category_name`='$category_name',,  WHERE id=$category_id";
+            $query = "UPDATE  `catogries` SET  `category_name`='$category_name',  WHERE user_id=$category_id";
 
             $result = mysqli_query($this->connection, $query);
             echo $result;
@@ -130,7 +130,7 @@
         {
             $this->connect();
 
-            $query = "UPDATE  `products` SET  `price`='$price',,  WHERE id=$product_id";
+            $query = "UPDATE  `products` SET  `price`='$price',,  WHERE user_id=$product_id";
 
             $result = mysqli_query($this->connection, $query);
             echo $result;
@@ -142,7 +142,7 @@
         {
             $this->connect();
 
-            $query = "UPDATE  `orders` SET  `order_date`='$order_date',,  WHERE id=$order_id";
+            $query = "UPDATE  `orders` SET  `order_date`='$order_date',,  WHERE user_id=$order_id";
 
             $result = mysqli_query($this->connection, $query);
             echo $result;
@@ -153,7 +153,7 @@
         {
             $this->connect();
 
-            $query = "UPDATE  `orderitems` SET  `order_id`='$order_id',`product_id`='$product_id',`quantity`='$quantity',  WHERE id=$order_item_id";
+            $query = "UPDATE  `orderitems` SET  `order_id`='$order_id',`product_id`='$product_id',`quantity`='$quantity',  WHERE user_id=$order_item_id";
 
             $result = mysqli_query($this->connection, $query);
             echo $result;
@@ -167,8 +167,8 @@
         {
             $this->connect();
 
-            $query = "UPDATE  `reviews` SET `comment`='$comment', `product_id`='$product_id',`rating`='$rating'`user_id`='$user_id',  WHERE id=$review_id";
-
+            $query = "UPDATE  `reviews` SET user_id=$review_id,`comment`='$comment', `product_id`='$product_id',`rating`='$rating'`user_id`='$user_id',  WHERE $review_id";
+// UPDATE `users` SET `user_id`='[value-1]',`name`='[value-2]',`email`='[value-3]',`password`='[value-4]' WHERE 1
             $result = mysqli_query($this->connection, $query);
             echo $result;
         }
@@ -186,23 +186,23 @@
 
         // delete the user detail via user id
 
-        function deleteUser($user_id)
+        function deleteUser($id)
         {
             $this->connect();
 
-            $query = "select * from product where id=$user_id";
+            $query = "DELETE  from `users` WHERE user_id=$id ";
 
             $result = mysqli_query($this->connection, $query);
-
+           
             return $result;
         }
 
     //delete category
-        function deleteCatogry($category_id)
+        function deleteCatogry($id)
         {
             $this->connect();
 
-            $query = "select * from product where id=$category_id";
+            $query = "DELETE  from `product` WHERE category_id=$id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -210,11 +210,11 @@
         }
 
 // delete product 
-        function deleteProduct($product_id)
+        function deleteProduct($id)
         {
             $this->connect();
 
-            $query = "select * from product where id=$product_id";
+            $query = "DELETE  from `product` WHERE product_id=$id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -223,11 +223,11 @@
 
 
         //delete order
-        function deleteOrder($order_id)
+        function deleteOrder($id)
         {
             $this->connect();
 
-            $query = "select * from product where id=$order_id";
+            $query = "DELETE  from `product` WHERE order_id=$id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -235,11 +235,11 @@
         }
 
 // delete orderitem
-        function deleteOrderItem($order_item_id)
+        function deleteOrderItem($id)
         {
             $this->connect();
 
-            $query = "select * from product where id=$order_item_id";
+            $query = "DELETE from `product` WHERE order_item_id=$id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -250,7 +250,7 @@
         {
             $this->connect();
 
-            $query = "select * from product where id=$review_id";
+            $query = "DELETE  from `product` WHERE review_id=$review_id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -268,12 +268,12 @@
 
         // get the product details for updating the details of product
 
-        function  getProductRecord($id)
+        function  getUser($user_id)
         {
 
-            $this->connectWithDatabase();
+            $this->connect();
 
-            $query = "select * from student where id=$id";
+            $query = "select * from users where user_id=$user_id";
 
             $result = mysqli_query($this->connection, $query);
 
@@ -281,13 +281,22 @@
         }
 
 
+        function getUserByinsert($id){
+            $this->connect();
+            $q="select * from `users` where user_id=$id";
+           
+            $res=mysqli_query($this->connection,$q);
+            return $res;
+        }
+
+
         // get the product details show the user interface 
 
         function getData()
         {
-            $this->connectWithDatabase();
+            $this->connect();
 
-            $query = "SELECT * from  product ";
+            $query = "SELECT * from  users ";
 
             $result = mysqli_query($this->connection, $query);
 

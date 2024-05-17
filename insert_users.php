@@ -1,23 +1,27 @@
 <?php
-
 header("Access-Control-Allow-Methods: POST");
 header("Content-Type:application/json");
 
-include ("database.php");
+
+include("database.php");
+
+
+$con=new dbConnection();
+$con->connect();
+
+
+
+$res = [];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // $id = $_POST["id"];
     $name = $_POST["name"];
     $email = $_POST["email"];
     $pass = $_POST["password"];
    
 
-    
     $errorMessage = "";
 
-    if (move_uploaded_file($myFilePath, $imgToPath)) {
-        $errorMessage = $errorMessage . " upload complete,";
-    } else {
-        $errorMessage = $errorMessage . " move_uploaded_file failed,";
-    }
+    
 
     if ($name == null) {
         $errorMessage = $errorMessage . " name,";
@@ -30,27 +34,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
 
-    if ($name != null && $email != null && $pass != null ) {
+    if ($name != null && $email != null && $pass != null  ) {
         $con = new dbConnection();
         $con->connect();
-        $con->insertUser($name, $email, $pass, );
+        $con->insertUser($name, $email, $pass);
 
         $res["data"] = "Successfully added";
-        $usersData = [];
-        
-        while ($s = mysqli_fetch_assoc($sRec)) {
-            array_push($usersData, $s);
-        }
+        // $usersData = [$res];
+        // $sRec = $con->getUserByinsert($id);
+        // while ($s = mysqli_fetch_assoc($sRec)) {
+        //     array_push($usersData, $s);
+        // }
         // $user=$gsbd;
         $res["result"] = true;
 
         $user["name"] = $name;
         $user["email"] = $email;
         $user["password"] = $pass;
-        $user["number"] = $num;
-        $user["marks"] = $marks;
-        $user["insert_by"] = $iby;
-        $res["user"] = $usersData;
+       
+        // $res["user"] = $usersData;
     } else {
         $res["result"] = false;
         $res["message"] = $errorMessage . " parameter is missing";
